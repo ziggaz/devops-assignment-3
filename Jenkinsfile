@@ -29,8 +29,8 @@ pipeline {
                         currentBuild.result = 'FAILURE'
                         throw e
                     } finally {
-                        // Clean up containers
-                        sh 'docker-compose down -v'
+                        // We intentionally leave the web app running so the instructor can evaluate it
+                        // sh 'docker-compose down -v'
                     }
                 }
             }
