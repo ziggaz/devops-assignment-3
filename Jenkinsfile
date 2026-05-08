@@ -16,6 +16,10 @@ pipeline {
             steps {
                 script {
                     try {
+                        // Stop any old containers and rebuild with latest code
+                        sh 'docker-compose down -v || true'
+                        sh 'docker-compose build web'
+                        
                         // Bring up web app in the background
                         sh 'docker-compose up -d web'
                         
@@ -28,9 +32,6 @@ pipeline {
                     } catch (Exception e) {
                         currentBuild.result = 'FAILURE'
                         throw e
-                    } finally {
-                        // We intentionally leave the web app running so the instructor can evaluate it
-                        // sh 'docker-compose down -v'
                     }
                 }
             }
