@@ -131,3 +131,4 @@ When a collaborator pushes code:
 2. **Collaborator Added:** `qasimalik@gmail.com` has been added as a collaborator to the repository.
 3. **Pipeline Integrated:** The webhook is fully operational, linking GitHub to the AWS EC2 instance where Jenkins resides.
 4. **Email Configured:** Jenkins has SMTP configured, actively pushing out emails containing test status links upon completion.
+ 
