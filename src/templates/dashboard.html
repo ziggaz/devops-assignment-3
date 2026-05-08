@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Car Rental - Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; color: #fff; }
+        nav { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; }
+        .nav-brand { font-size: 22px; font-weight: 700; }
+        .nav-links a { color: #ccc; text-decoration: none; margin-left: 25px; font-size: 15px; }
+        .nav-links a:hover { color: #667eea; }
+        .nav-links a.active { color: #667eea; font-weight: 600; }
+        .content { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+        h2 { margin-bottom: 20px; font-size: 24px; }
+        .flash { padding: 10px 15px; border-radius: 8px; margin-bottom: 15px; font-size: 14px; }
+        .flash.error { background: rgba(255,0,0,0.15); color: #ff6b6b; }
+        .flash.success { background: rgba(0,255,0,0.1); color: #51cf66; }
+        .search-bar { display: flex; gap: 10px; margin-bottom: 25px; }
+        .search-bar input { flex: 1; padding: 12px 16px; border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; background: rgba(255,255,255,0.08); color: #fff; font-size: 15px; outline: none; }
+        .search-bar button { padding: 12px 24px; background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border: none; border-radius: 10px; font-size: 15px; cursor: pointer; }
+        .search-bar a { padding: 12px 20px; background: rgba(255,255,255,0.1); color: #ccc; border-radius: 10px; text-decoration: none; font-size: 15px; display: flex; align-items: center; }
+        .cars-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .car-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 25px; transition: transform 0.2s; }
+        .car-card:hover { transform: translateY(-4px); }
+        .car-name { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+        .car-brand { color: #aaa; font-size: 14px; margin-bottom: 12px; }
+        .car-details { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .car-year { color: #888; font-size: 13px; }
+        .car-price { color: #51cf66; font-size: 18px; font-weight: 700; }
+        .car-price span { font-size: 12px; color: #aaa; font-weight: 400; }
+        .rent-btn { display: block; width: 100%; padding: 12px; background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border: none; border-radius: 10px; font-size: 15px; cursor: pointer; text-align: center; text-decoration: none; }
+        .rent-btn:hover { opacity: 0.9; }
+        .no-cars { text-align: center; color: #888; padding: 40px; font-size: 16px; }
+        .no-cars p { margin-top: 8px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-brand" id="nav-brand">🚗 Elite Car Rental</div>
+        <div class="nav-links">
+            <a href="/dashboard" class="active" id="nav-dashboard">Dashboard</a>
+            <a href="/my-rentals" id="nav-rentals">My Rentals</a>
+            <a href="/profile" id="nav-profile">Profile</a>
+            <a href="/logout" id="nav-logout">Logout</a>
+        </div>
+    </nav>
+    <div class="content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash {{ category }}" id="flash-message">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+        <h2 id="dashboard-title">Welcome, {{ session['full_name'] }}!</h2>
+        <form class="search-bar" method="GET" action="/dashboard" id="search-form">
+            <input type="text" name="search" id="search-input" placeholder="Search cars by name or brand..." value="{{ search }}">
+            <button type="submit" id="search-btn">Search</button>
+            <a href="/dashboard" id="clear-search">Clear</a>
+        </form>
+        <div class="cars-grid" id="cars-grid">
+            {% if cars %}
+            {% for car in cars %}
+            <div class="car-card" id="car-{{ car['id'] }}">
+                <div class="car-name">{{ car['name'] }}</div>
+                <div class="car-brand">{{ car['brand'] }}</div>
+                <div class="car-details">
+                    <span class="car-year">{{ car['year'] }}</span>
+                    <span class="car-price">${{ "%.2f"|format(car['price_per_day']) }} <span>/day</span></span>
+                </div>
+                <a href="/rent/{{ car['id'] }}" class="rent-btn" id="rent-btn-{{ car['id'] }}">Rent Now</a>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="no-cars" id="no-cars">
+                <h3>No cars available</h3>
+                <p>Try a different search or check back later.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

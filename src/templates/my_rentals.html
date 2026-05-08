@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Car Rental - My Rentals</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; color: #fff; }
+        nav { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; }
+        .nav-brand { font-size: 22px; font-weight: 700; }
+        .nav-links a { color: #ccc; text-decoration: none; margin-left: 25px; font-size: 15px; }
+        .nav-links a:hover { color: #667eea; }
+        .nav-links a.active { color: #667eea; font-weight: 600; }
+        .content { max-width: 900px; margin: 30px auto; padding: 0 20px; }
+        h2 { margin-bottom: 20px; font-size: 24px; }
+        .flash { padding: 10px 15px; border-radius: 8px; margin-bottom: 15px; font-size: 14px; }
+        .flash.success { background: rgba(0,255,0,0.1); color: #51cf66; }
+        table { width: 100%; border-collapse: collapse; background: rgba(255,255,255,0.05); border-radius: 12px; overflow: hidden; }
+        th { background: rgba(255,255,255,0.08); padding: 14px 16px; text-align: left; font-size: 13px; color: #aaa; text-transform: uppercase; letter-spacing: 0.5px; }
+        td { padding: 14px 16px; border-top: 1px solid rgba(255,255,255,0.06); font-size: 14px; }
+        .status-active { color: #ffd43b; font-weight: 600; }
+        .status-returned { color: #51cf66; font-weight: 600; }
+        .return-btn { padding: 8px 18px; background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: #fff; border: none; border-radius: 8px; font-size: 13px; cursor: pointer; text-decoration: none; }
+        .return-btn:hover { opacity: 0.9; }
+        .no-rentals { text-align: center; color: #888; padding: 40px; font-size: 16px; }
+        .no-rentals a { color: #667eea; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-brand">🚗 Elite Car Rental</div>
+        <div class="nav-links">
+            <a href="/dashboard" id="nav-dashboard">Dashboard</a>
+            <a href="/my-rentals" class="active" id="nav-rentals">My Rentals</a>
+            <a href="/profile" id="nav-profile">Profile</a>
+            <a href="/logout" id="nav-logout">Logout</a>
+        </div>
+    </nav>
+    <div class="content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash {{ category }}" id="flash-message">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+        <h2 id="rentals-title">My Rentals</h2>
+        {% if rentals %}
+        <table id="rentals-table">
+            <thead>
+                <tr>
+                    <th>Car</th>
+                    <th>Brand</th>
+                    <th>Year</th>
+                    <th>Price/Day</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rental in rentals %}
+                <tr id="rental-{{ rental['rental_id'] }}">
+                    <td>{{ rental['name'] }}</td>
+                    <td>{{ rental['brand'] }}</td>
+                    <td>{{ rental['year'] }}</td>
+                    <td>${{ "%.2f"|format(rental['price_per_day']) }}</td>
+                    <td>{{ rental['rental_date'][:10] }}</td>
+                    <td><span class="status-{{ rental['status'] }}">{{ rental['status']|capitalize }}</span></td>
+                    <td>
+                        {% if rental['status'] == 'active' %}
+                        <a href="/return/{{ rental['rental_id'] }}" class="return-btn" id="return-btn-{{ rental['rental_id'] }}">Return</a>
+                        {% else %}
+                        <span style="color: #888;">—</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="no-rentals" id="no-rentals">
+            <h3>No rentals yet</h3>
+            <p>Browse our <a href="/dashboard">available cars</a> to get started!</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

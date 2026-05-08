@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Car Rental - Profile</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; color: #fff; }
+        nav { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; }
+        .nav-brand { font-size: 22px; font-weight: 700; }
+        .nav-links a { color: #ccc; text-decoration: none; margin-left: 25px; font-size: 15px; }
+        .nav-links a:hover { color: #667eea; }
+        .nav-links a.active { color: #667eea; font-weight: 600; }
+        .content { max-width: 500px; margin: 40px auto; padding: 0 20px; }
+        .card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 35px; }
+        h2 { margin-bottom: 25px; font-size: 24px; }
+        .flash { padding: 10px 15px; border-radius: 8px; margin-bottom: 15px; font-size: 14px; }
+        .flash.success { background: rgba(0,255,0,0.1); color: #51cf66; }
+        label { color: #ccc; font-size: 14px; display: block; margin-bottom: 6px; }
+        input { width: 100%; padding: 12px 16px; border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; background: rgba(255,255,255,0.08); color: #fff; font-size: 15px; margin-bottom: 18px; outline: none; }
+        input:focus { border-color: #667eea; }
+        input:disabled { opacity: 0.5; }
+        button { width: 100%; padding: 14px; background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; }
+        button:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-brand">🚗 Elite Car Rental</div>
+        <div class="nav-links">
+            <a href="/dashboard" id="nav-dashboard">Dashboard</a>
+            <a href="/my-rentals" id="nav-rentals">My Rentals</a>
+            <a href="/profile" class="active" id="nav-profile">Profile</a>
+            <a href="/logout" id="nav-logout">Logout</a>
+        </div>
+    </nav>
+    <div class="content">
+        <div class="card">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="flash {{ category }}" id="flash-message">{{ message }}</div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+            <h2 id="profile-title">Edit Profile</h2>
+            <form method="POST" id="profile-form">
+                <label for="username">Username</label>
+                <input type="text" id="username" value="{{ user['username'] }}" disabled>
+                <label for="full_name">Full Name</label>
+                <input type="text" id="full_name" name="full_name" value="{{ user['full_name'] }}" required>
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" value="{{ user['email'] }}" required>
+                <button type="submit" id="update-btn">Update Profile</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
